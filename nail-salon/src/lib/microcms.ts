@@ -19,16 +19,6 @@ export type Blog = {
   revisedAt: string;
 };
 
-export type Menu = {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  duration: number; // 施術時間（分）
-  image?: { url: string; width: number; height: number };
-  category?: string;
-};
-
 export type GalleryItem = {
   id: string;
   image: { url: string; width: number; height: number };
@@ -46,10 +36,6 @@ export async function getBlogs(queries?: object) {
 
 export async function getBlog(id: string) {
   return client.getListDetail<Blog>({ endpoint: "blogs", contentId: id });
-}
-
-export async function getMenus() {
-  return client.getList<Menu>({ endpoint: "menus" });
 }
 
 export async function getGallery() {

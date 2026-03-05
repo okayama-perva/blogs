@@ -15,8 +15,6 @@ model Reservation {
   customerPhone String
   menuName      String            // microCMSのメニュー名をコピー
   menuPrice     Int
-  staffId       Int?
-  staff         Staff?            @relation(fields: [staffId], references: [id])
   startAt       DateTime
   endAt         DateTime
   status        ReservationStatus @default(PENDING)
@@ -32,14 +30,18 @@ enum ReservationStatus {
   DONE       // 完了
 }
 
-// スタッフ
-model Staff {
-  id           Int           @id @default(autoincrement())
-  name         String
-  color        String        @default("#ec4899") // カレンダー表示色
-  isActive     Boolean       @default(true)
-  createdAt    DateTime      @default(now())
-  reservations Reservation[]
+// メニュー
+model Menu {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?  @db.Text
+  price       Int
+  duration    Int      // 施術時間（分）
+  category    String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // 管理者（NextAuth用）
@@ -48,11 +50,5 @@ model Admin {
   email     String   @unique
   password  String   // bcryptハッシュ
   name      String
-  role      AdminRole @default(STAFF)
   createdAt DateTime @default(now())
-}
-
-enum AdminRole {
-  OWNER  // オーナー（全権限）
-  STAFF  // スタッフ（予約管理のみ）
 }
