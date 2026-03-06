@@ -2,31 +2,31 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-pink-100 bg-pink-50/50">
-      <div className="mx-auto max-w-6xl px-4 py-10 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {/* サロン情報 */}
+    <footer className="border-t border-[var(--accent-light)] mt-20">
+      <div className="mx-auto max-w-6xl px-6 py-16 lg:px-10">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <h3 className="text-sm font-bold text-pink-600 mb-3">Nail Salon</h3>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              〒000-0000 東京都○○区○○ 1-2-3<br />
-              TEL: 03-0000-0000<br />
-              営業時間: 10:00〜20:00（不定休）
+            <p className="text-[15px] font-medium tracking-[0.15em] text-[var(--foreground)] mb-4">
+              Nail Salon
             </p>
+            <div className="text-sm text-[var(--muted)] leading-loose space-y-1">
+              <p>〒000-0000 東京都○○区○○ 1-2-3</p>
+              <p>TEL 03-0000-0000</p>
+              <p>10:00 - 20:00（不定休）</p>
+            </div>
           </div>
 
-          {/* ナビ */}
           <div>
-            <h3 className="text-sm font-bold text-gray-700 mb-3">メニュー</h3>
-            <ul className="space-y-2">
+            <p className="text-sm tracking-[0.15em] text-[var(--muted)] mb-4">Pages</p>
+            <ul className="space-y-3">
               {[
-                { href: "/menu", label: "施術メニュー" },
-                { href: "/blog", label: "ブログ" },
-                { href: "/reservation", label: "ご予約" },
-                { href: "/contact", label: "お問い合わせ" },
+                { href: "/menu", label: "Menu" },
+                { href: "/blog", label: "Blog" },
+                { href: "/reservation", label: "Reserve" },
+                { href: "/contact", label: "Contact" },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-xs text-gray-500 hover:text-pink-500 transition-colors">
+                  <Link href={link.href} className="text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors duration-300">
                     {link.label}
                   </Link>
                 </li>
@@ -34,15 +34,14 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* SNS */}
           <div>
-            <h3 className="text-sm font-bold text-gray-700 mb-3">SNS</h3>
-            <p className="text-xs text-gray-500">Instagram / LINE（準備中）</p>
+            <p className="text-sm tracking-[0.15em] text-[var(--muted)] mb-4">Follow</p>
+            <p className="text-sm text-[var(--muted)]">Instagram / LINE</p>
           </div>
         </div>
 
-        <p className="mt-8 text-center text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} Nail Salon. All rights reserved.
+        <p className="mt-16 text-center text-[11px] tracking-[0.1em] text-[var(--muted)]/50">
+          &copy; {new Date().getFullYear()} Nail Salon
         </p>
       </div>
     </footer>

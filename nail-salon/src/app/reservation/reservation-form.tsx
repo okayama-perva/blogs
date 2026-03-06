@@ -5,7 +5,7 @@ import { submitReservation, type ReservationState } from "./action";
 import type { Menu } from "@/generated/prisma/browser";
 
 const inputClass =
-  "w-full rounded-lg border border-pink-200 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-pink-400 focus:outline-none focus:ring-1 focus:ring-pink-400";
+  "w-full border-b border-[var(--accent-light)] bg-transparent px-1 py-3 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted)]/40 focus:border-[var(--accent)] focus:outline-none transition-colors";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -59,13 +59,11 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
     }
   }, [selectedDate, fetchSlots]);
 
-  // メニュー選択時に施術時間分の枠を考慮して利用可能判定を更新
   const getAvailableSlots = useCallback(() => {
     if (!selectedMenu || slots.length === 0) return slots;
     const slotsNeeded = Math.ceil(selectedMenu.duration / 30);
     return slots.map((slot, i) => {
       if (!slot.available) return slot;
-      // 施術に必要な連続枠がすべて空いているか
       for (let j = 0; j < slotsNeeded; j++) {
         if (i + j >= slots.length || !slots[i + j].available) {
           return { ...slot, available: false };
@@ -99,16 +97,16 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
 
   if (state?.success) {
     return (
-      <div className="rounded-xl border border-green-200 bg-green-50 p-8 text-center">
-        <p className="text-green-700 font-semibold">{state.message}</p>
+      <div className="py-12 text-center">
+        <p className="text-[15px] text-[var(--foreground)]">{state.message}</p>
       </div>
     );
   }
 
   return (
-    <form action={formAction} className="space-y-8">
+    <form action={formAction} className="space-y-12">
       {state?.message && (
-        <p className="text-sm text-red-500">{state.message}</p>
+        <p className="text-xs text-red-500">{state.message}</p>
       )}
 
       {/* ハニーポット（非表示） */}
@@ -119,43 +117,48 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
 
       {/* Step 1: メニュー選択 */}
       <div>
-        <h2 className="text-sm font-bold text-gray-700 mb-3">1. メニューを選択</h2>
+        <p className="text-[11px] tracking-[0.15em] uppercase text-[var(--muted)] mb-6">01 — メニューを選択</p>
         {menus.length > 0 ? (
-          <div className="space-y-2">
+          <div className="divide-y divide-[var(--accent-light)]">
             {menus.map((menu) => (
               <label
                 key={menu.id}
-                className={`flex items-center justify-between rounded-lg border p-4 cursor-pointer transition-colors ${
+                className={`flex items-center justify-between py-5 cursor-pointer transition-colors ${
                   selectedMenu?.id === menu.id
-                    ? "border-pink-400 bg-pink-50"
-                    : "border-pink-100 hover:border-pink-300"
+                    ? "text-[var(--accent)]"
+                    : "text-[var(--foreground)]"
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
+                  <span className={`inline-block w-4 h-4 rounded-full border-2 transition-colors ${
+                    selectedMenu?.id === menu.id
+                      ? "border-[var(--accent)] bg-[var(--accent)]"
+                      : "border-[var(--muted)]/30"
+                  }`} />
                   <input
                     type="radio"
                     name="menuSelect"
                     value={menu.id}
-                    className="accent-pink-500"
+                    className="sr-only"
                     onChange={() => setSelectedMenu(menu)}
                     required
                   />
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">{menu.name}</p>
-                    <p className="text-xs text-gray-500">{menu.duration}分</p>
+                    <p className="text-[15px]">{menu.name}</p>
+                    <p className="text-[11px] text-[var(--muted)] mt-0.5">{menu.duration}min</p>
                   </div>
                 </div>
-                <span className="text-sm font-bold text-pink-500">
+                <span className="text-[15px] font-medium text-[var(--accent)]">
                   &yen;{menu.price.toLocaleString()}
                 </span>
               </label>
             ))}
           </div>
         ) : (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">メニューを直接入力してください</p>
+          <div className="space-y-4">
+            <p className="text-sm text-[var(--muted)]">メニューを直接入力してください</p>
             <input name="menuName" type="text" required className={inputClass} placeholder="メニュー名" />
-            <input name="menuPrice" type="number" required className={`${inputClass} mt-2`} placeholder="料金" />
+            <input name="menuPrice" type="number" required className={inputClass} placeholder="料金" />
             <input name="duration" type="hidden" value="60" />
           </div>
         )}
@@ -170,33 +173,31 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
 
       {/* Step 2: カレンダーで日付選択 */}
       <div>
-        <h2 className="text-sm font-bold text-gray-700 mb-3">2. 日付を選択</h2>
-        <div className="rounded-xl border border-pink-100 p-4">
-          {/* カレンダーヘッダー */}
-          <div className="flex items-center justify-between mb-4">
+        <p className="text-[11px] tracking-[0.15em] uppercase text-[var(--muted)] mb-6">02 — 日付を選択</p>
+        <div className="max-w-sm mx-auto">
+          <div className="flex items-center justify-between mb-6">
             <button
               type="button"
               onClick={prevMonth}
               disabled={isPrevDisabled}
-              className="p-1 text-gray-400 hover:text-pink-500 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
             >
-              &larr;
+              ←
             </button>
-            <span className="text-sm font-semibold text-gray-700">
+            <span className="text-[15px] text-[var(--foreground)]">
               {calYear}年{calMonth + 1}月
             </span>
-            <button type="button" onClick={nextMonth} className="p-1 text-gray-400 hover:text-pink-500">
-              &rarr;
+            <button type="button" onClick={nextMonth} className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors">
+              →
             </button>
           </div>
 
-          {/* 曜日 */}
-          <div className="grid grid-cols-7 gap-1 mb-1">
+          <div className="grid grid-cols-7 gap-1 mb-2">
             {WEEKDAYS.map((w, i) => (
               <div
                 key={w}
-                className={`text-center text-xs font-medium py-1 ${
-                  i === 0 ? "text-red-400" : i === 6 ? "text-blue-400" : "text-gray-400"
+                className={`text-center text-[11px] py-1 ${
+                  i === 0 ? "text-[var(--accent)]" : i === 6 ? "text-[var(--muted)]" : "text-[var(--muted)]"
                 }`}
               >
                 {w}
@@ -204,7 +205,6 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
             ))}
           </div>
 
-          {/* 日付グリッド */}
           <div className="grid grid-cols-7 gap-1">
             {calendarDays.map((day, idx) => {
               if (day === null) return <div key={`e-${idx}`} />;
@@ -217,12 +217,12 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
                   type="button"
                   disabled={past}
                   onClick={() => setSelectedDate(dateStr)}
-                  className={`aspect-square flex items-center justify-center rounded-lg text-sm transition-colors ${
+                  className={`aspect-square flex items-center justify-center text-[15px] transition-colors ${
                     selected
-                      ? "bg-pink-500 text-white font-bold"
+                      ? "bg-[var(--foreground)] text-white"
                       : past
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-700 hover:bg-pink-50"
+                        ? "text-[var(--muted)]/20 cursor-not-allowed"
+                        : "text-[var(--foreground)] hover:bg-[var(--gray-light)]"
                   }`}
                 >
                   {day}
@@ -237,14 +237,14 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
       {/* Step 3: 時間枠選択 */}
       {selectedDate && (
         <div>
-          <h2 className="text-sm font-bold text-gray-700 mb-3">
-            3. 時間を選択
-            <span className="text-xs font-normal text-gray-400 ml-2">
-              {selectedDate.replace(/-/g, "/")}
-            </span>
-          </h2>
+          <p className="text-[11px] tracking-[0.15em] uppercase text-[var(--muted)] mb-2">
+            03 — 時間を選択
+          </p>
+          <p className="text-sm text-[var(--muted)] mb-6">
+            {selectedDate.replace(/-/g, "/")}
+          </p>
           {loadingSlots ? (
-            <p className="text-sm text-gray-400 text-center py-8">読み込み中...</p>
+            <p className="text-sm text-[var(--muted)] text-center py-8">読み込み中...</p>
           ) : (
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
               {displaySlots.map((slot) => {
@@ -255,12 +255,12 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
                     type="button"
                     disabled={!slot.available}
                     onClick={() => setSelectedTime(slot.time)}
-                    className={`rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                    className={`py-2.5 text-[15px] transition-colors ${
                       selected
-                        ? "bg-pink-500 text-white"
+                        ? "bg-[var(--foreground)] text-white"
                         : slot.available
-                          ? "bg-pink-50 text-pink-600 hover:bg-pink-100 border border-pink-200"
-                          : "bg-gray-100 text-gray-400 cursor-not-allowed line-through"
+                          ? "bg-[var(--gray-light)] text-[var(--foreground)] hover:bg-[var(--accent-light)]"
+                          : "text-[var(--muted)]/20 cursor-not-allowed line-through"
                     }`}
                   >
                     {slot.time}
@@ -275,31 +275,31 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
 
       {/* Step 4: 顧客情報 */}
       {selectedTime && (
-        <div className="space-y-4">
-          <h2 className="text-sm font-bold text-gray-700 mb-1">4. お客様情報</h2>
+        <div className="space-y-6">
+          <p className="text-[11px] tracking-[0.15em] uppercase text-[var(--muted)] mb-2">04 — お客様情報</p>
           <div>
-            <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">
-              お名前 <span className="text-red-400">*</span>
+            <label htmlFor="customerName" className="block text-xs text-[var(--muted)] mb-1">
+              お名前 <span className="text-[var(--accent)]">*</span>
             </label>
             <input id="customerName" name="customerName" type="text" required className={inputClass} placeholder="山田 花子" />
           </div>
 
           <div>
-            <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700 mb-1">
-              メールアドレス <span className="text-red-400">*</span>
+            <label htmlFor="customerEmail" className="block text-xs text-[var(--muted)] mb-1">
+              メールアドレス <span className="text-[var(--accent)]">*</span>
             </label>
             <input id="customerEmail" name="customerEmail" type="email" required className={inputClass} placeholder="example@email.com" />
           </div>
 
           <div>
-            <label htmlFor="customerPhone" className="block text-sm font-medium text-gray-700 mb-1">
-              電話番号 <span className="text-red-400">*</span>
+            <label htmlFor="customerPhone" className="block text-xs text-[var(--muted)] mb-1">
+              電話番号 <span className="text-[var(--accent)]">*</span>
             </label>
             <input id="customerPhone" name="customerPhone" type="tel" required className={inputClass} placeholder="090-0000-0000" />
           </div>
 
           <div>
-            <label htmlFor="note" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="note" className="block text-xs text-[var(--muted)] mb-1">
               備考
             </label>
             <textarea id="note" name="note" rows={3} className={inputClass} placeholder="ご要望があればご記入ください" />
@@ -308,7 +308,7 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full rounded-full bg-pink-500 py-3 text-sm font-semibold text-white hover:bg-pink-600 transition-colors disabled:opacity-50"
+            className="w-full py-4 text-sm tracking-[0.15em] text-white bg-[var(--foreground)] hover:bg-[var(--accent)] transition-colors duration-300 disabled:opacity-40"
           >
             {isPending ? "送信中..." : "予約する"}
           </button>

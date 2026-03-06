@@ -27,21 +27,24 @@ export default async function BlogDetailPage({ params }: Props) {
   }
 
   return (
-    <article className="max-w-2xl mx-auto pb-16">
-      <Link href="/blog" className="text-sm text-pink-500 hover:underline">
-        ← ブログ一覧に戻る
+    <article className="max-w-2xl mx-auto pt-8 pb-20">
+      <Link
+        href="/blog"
+        className="text-sm tracking-[0.1em] text-[var(--muted)] hover:text-[var(--accent)] transition-colors duration-300"
+      >
+        ← Back
       </Link>
 
-      <div className="mt-6">
+      <div className="mt-10">
         {blog.category && (
-          <span className="text-xs text-pink-500 font-medium">
+          <span className="text-[11px] tracking-[0.1em] text-[var(--accent)]">
             {blog.category.name}
           </span>
         )}
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1">
+        <h1 className="text-2xl sm:text-3xl font-light text-[var(--foreground)] mt-2 leading-relaxed">
           {blog.title}
         </h1>
-        <p className="text-xs text-gray-400 mt-2">
+        <p className="text-[11px] text-[var(--muted)] mt-3">
           {new Date(blog.publishedAt).toLocaleDateString("ja-JP")}
         </p>
       </div>
@@ -50,14 +53,16 @@ export default async function BlogDetailPage({ params }: Props) {
         <img
           src={blog.eyecatch.url}
           alt={blog.title}
-          className="w-full rounded-xl mt-6"
+          className="w-full mt-10"
         />
       )}
 
       <div
-        className="prose prose-sm sm:prose max-w-none mt-8
-          prose-headings:text-gray-800 prose-a:text-pink-500
-          prose-img:rounded-lg"
+        className="prose prose-sm sm:prose max-w-none mt-12
+          prose-headings:font-light prose-headings:text-[var(--foreground)]
+          prose-p:text-[var(--muted)] prose-p:leading-loose prose-p:text-[15px]
+          prose-a:text-[var(--accent)] prose-a:no-underline hover:prose-a:underline
+          prose-img:rounded-none"
         dangerouslySetInnerHTML={{ __html: blog.content }}
       />
     </article>

@@ -33,38 +33,33 @@ export default async function MenuPage() {
 
   return (
     <>
-      <section className="py-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-800">Menu</h1>
-        <div className="w-12 h-0.5 bg-pink-400 mx-auto mt-4" />
+      <section className="pt-16 pb-12 text-center">
+        <p className="text-[11px] tracking-[0.35em] uppercase text-[var(--muted)] mb-4">Services</p>
+        <h1 className="text-2xl sm:text-3xl font-light text-[var(--foreground)]">Menu</h1>
       </section>
 
       {menus.length > 0 ? (
-        <div className="space-y-12 pb-16">
+        <div className="max-w-2xl mx-auto space-y-16 pb-20">
           {categories.map((cat) => (
             <section key={cat}>
-              <h2 className="text-lg font-bold text-pink-500 mb-6 border-b border-pink-100 pb-2">
+              <h2 className="text-sm tracking-[0.15em] text-[var(--accent)] mb-8 pb-3 border-b border-[var(--accent-light)]">
                 {cat}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="divide-y divide-[var(--accent-light)]">
                 {grouped[cat].map((menu) => (
-                  <div
-                    key={menu.id}
-                    className="rounded-xl border border-pink-100 overflow-hidden hover:shadow-md transition-shadow"
-                  >
-                    <div className="p-5">
-                      <h3 className="font-semibold text-gray-800">{menu.name}</h3>
+                  <div key={menu.id} className="py-5 flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-[15px] text-[var(--foreground)]">{menu.name}</h3>
                       {menu.description && (
-                        <p className="text-xs text-gray-500 mt-2 leading-relaxed">
+                        <p className="text-sm text-[var(--muted)] mt-1.5 leading-relaxed">
                           {menu.description}
                         </p>
                       )}
-                      <div className="flex items-center justify-between mt-4">
-                        <span className="text-pink-500 font-bold">
-                          &yen;{menu.price.toLocaleString()}
-                        </span>
-                        <span className="text-xs text-gray-400">{menu.duration}分</span>
-                      </div>
+                      <p className="text-[11px] text-[var(--muted)] mt-1">{menu.duration}min</p>
                     </div>
+                    <p className="text-[15px] text-[var(--accent)] font-medium shrink-0">
+                      &yen;{menu.price.toLocaleString()}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -72,7 +67,7 @@ export default async function MenuPage() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-400 text-sm py-16">
+        <p className="text-center text-[var(--muted)] text-sm py-20">
           メニューは準備中です
         </p>
       )}

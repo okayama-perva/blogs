@@ -21,40 +21,38 @@ export default async function BlogPage() {
 
   return (
     <>
-      <section className="py-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-800">Blog</h1>
-        <div className="w-12 h-0.5 bg-pink-400 mx-auto mt-4" />
+      <section className="pt-16 pb-12 text-center">
+        <p className="text-[11px] tracking-[0.35em] uppercase text-[var(--muted)] mb-4">Journal</p>
+        <h1 className="text-2xl sm:text-3xl font-light text-[var(--foreground)]">Blog</h1>
       </section>
 
       {blogs.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-16">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 pb-20">
           {blogs.map((blog) => (
             <Link
               key={blog.id}
               href={`/blog/${blog.id}`}
-              className="group block rounded-xl border border-pink-100 overflow-hidden hover:shadow-md transition-shadow"
+              className="group block"
             >
-              {blog.eyecatch ? (
-                <img
-                  src={blog.eyecatch.url}
-                  alt={blog.title}
-                  className="w-full h-44 object-cover"
-                />
-              ) : (
-                <div className="w-full h-44 bg-pink-50 flex items-center justify-center text-pink-300 text-sm">
-                  No Image
-                </div>
-              )}
-              <div className="p-4">
+              <div className="aspect-[4/3] overflow-hidden bg-[var(--gray-light)]">
+                {blog.eyecatch ? (
+                  <img
+                    src={blog.eyecatch.url}
+                    alt={blog.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                ) : null}
+              </div>
+              <div className="mt-4">
                 {blog.category && (
-                  <span className="text-xs text-pink-500 font-medium">
+                  <span className="text-[11px] tracking-[0.1em] text-[var(--accent)]">
                     {blog.category.name}
                   </span>
                 )}
-                <h2 className="font-semibold text-gray-800 mt-1 group-hover:text-pink-500 transition-colors">
+                <h2 className="text-[15px] text-[var(--foreground)] mt-1 leading-relaxed group-hover:text-[var(--accent)] transition-colors duration-300">
                   {blog.title}
                 </h2>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-[11px] text-[var(--muted)] mt-2">
                   {new Date(blog.publishedAt).toLocaleDateString("ja-JP")}
                 </p>
               </div>
@@ -62,7 +60,7 @@ export default async function BlogPage() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-400 text-sm py-16">
+        <p className="text-center text-[var(--muted)] text-sm py-20">
           記事は準備中です
         </p>
       )}

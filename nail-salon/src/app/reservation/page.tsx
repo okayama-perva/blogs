@@ -24,15 +24,15 @@ export default async function ReservationPage() {
 
   return (
     <>
-      <section className="py-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-800">Reservation</h1>
-        <div className="w-12 h-0.5 bg-pink-400 mx-auto mt-4 mb-6" />
-        <p className="text-sm text-gray-600">
+      <section className="pt-16 pb-12 text-center">
+        <p className="text-[11px] tracking-[0.35em] uppercase text-[var(--muted)] mb-4">Reservation</p>
+        <h1 className="text-2xl sm:text-3xl font-light text-[var(--foreground)]">ご予約</h1>
+        <p className="text-sm text-[var(--muted)] mt-4">
           ご希望のメニュー・日時をお選びください。
         </p>
       </section>
 
-      <div className="max-w-2xl mx-auto pb-16">
+      <div className="max-w-2xl mx-auto pb-20">
         <ReservationForm menus={menus} />
       </div>
     </>

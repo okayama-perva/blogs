@@ -4,57 +4,55 @@ import Link from "next/link";
 import { useState } from "react";
 
 const navLinks = [
-  { href: "/", label: "ホーム" },
-  { href: "/menu", label: "メニュー" },
-  { href: "/blog", label: "ブログ" },
-  { href: "/reservation", label: "ご予約" },
-  { href: "/contact", label: "お問い合わせ" },
+  { href: "/", label: "Home" },
+  { href: "/menu", label: "Menu" },
+  { href: "/blog", label: "Blog" },
+  { href: "/reservation", label: "Reserve" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-pink-100">
-      <div className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3 lg:px-8">
-        {/* ロゴ */}
-        <Link href="/" className="text-xl font-bold tracking-wide text-pink-600">
+    <header className="sticky top-0 z-50 bg-[var(--background)]/90 backdrop-blur-md">
+      <div className="mx-auto max-w-6xl flex items-center justify-between px-6 py-5 lg:px-10">
+        <Link href="/" className="text-base font-medium tracking-[0.15em] text-[var(--foreground)]">
           Nail Salon
         </Link>
 
-        {/* PC ナビ */}
-        <nav className="hidden md:flex gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-gray-700 hover:text-pink-500 transition-colors"
+              className="text-sm tracking-[0.1em] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors duration-300"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        {/* ハンバーガーボタン */}
         <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
+          className="md:hidden p-2"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="メニュー"
         >
-          <span className={`block h-0.5 w-6 bg-gray-700 transition-transform ${isOpen ? "rotate-45 translate-y-2" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-gray-700 transition-opacity ${isOpen ? "opacity-0" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-gray-700 transition-transform ${isOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+          <div className="space-y-1.5">
+            <span className={`block h-px w-5 bg-[var(--foreground)] transition-all duration-300 ${isOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block h-px w-5 bg-[var(--foreground)] transition-opacity duration-300 ${isOpen ? "opacity-0" : ""}`} />
+            <span className={`block h-px w-5 bg-[var(--foreground)] transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+          </div>
         </button>
       </div>
 
-      {/* モバイルメニュー */}
       {isOpen && (
-        <nav className="md:hidden border-t border-pink-100 bg-white">
+        <nav className="md:hidden bg-[var(--background)] border-t border-[var(--accent-light)]">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="block px-6 py-3 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-500"
+              className="block px-6 py-4 text-sm tracking-[0.1em] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
               onClick={() => setIsOpen(false)}
             >
               {link.label}
