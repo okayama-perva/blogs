@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { getBlogs, type Blog } from "@/lib/microcms";
 import { prisma } from "@/lib/prisma";
