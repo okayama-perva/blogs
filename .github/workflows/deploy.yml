@@ -1,0 +1,73 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'nail-salon/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nail-salon
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: nail-salon/package-lock.json
+
+      - run: npm ci
+
+      - run: npx prisma generate
+
+      - run: npm run build
+        env:
+          MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+
+      # standalone + static を tar で固める
+      - name: Package build
+        run: |
+          tar -czf /tmp/deploy.tar.gz \
+            .next/standalone \
+            .next/static \
+            public \
+            prisma
+
+      # VPS に転送 & 再起動
+      - name: Deploy to VPS
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts 2>/dev/null
+
+          # 転送
+          scp /tmp/deploy.tar.gz deploy@${VPS_HOST}:/tmp/deploy.tar.gz
+
+          # 展開 & 再起動
+          ssh deploy@${VPS_HOST} bash -s << 'EOF'
+          cd /var/www/nail-salon
+          tar -xzf /tmp/deploy.tar.gz
+          cp -r .next/standalone/* .
+          cp -r .next/static .next/standalone/.next/ 2>/dev/null || true
+          rm /tmp/deploy.tar.gz
+
+          # Prisma migrate
+          npx prisma db push --skip-generate 2>/dev/null || true
+
+          sudo /bin/systemctl restart nail-salon
+          echo "Deploy complete!"
+          EOF
