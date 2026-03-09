@@ -46,6 +46,9 @@ jobs:
             public \
             prisma
 
+      - name: Verify package
+        run: ls -lh /tmp/deploy.tar.gz
+
       - name: Deploy to VPS
         env:
           SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
