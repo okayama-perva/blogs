@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getBlogs, type Blog } from "@/lib/microcms";
 import { prisma } from "@/lib/prisma";
 import type { Menu } from "@/generated/prisma/client";
+import ImageSlider from "@/components/image-slider";
 
 async function fetchMenus(): Promise<Menu[]> {
   try {
@@ -61,9 +62,13 @@ export default async function Home() {
           洗練された空間で、<br />あなただけの時間を。
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          <div className="aspect-[4/3] overflow-hidden">
-            <img src="https://placehold.co/800x600/f5f0eb/b8967a?text=Salon" alt="サロンの雰囲気" className="w-full h-full object-cover" />
-          </div>
+          <ImageSlider
+            images={[
+              { src: "https://placehold.co/800x600/f5f0eb/b8967a?text=Salon+1", alt: "サロンの雰囲気 1" },
+              { src: "https://placehold.co/800x600/ebe5de/a68b6b?text=Salon+2", alt: "サロンの雰囲気 2" },
+              { src: "https://placehold.co/800x600/e0d8cf/9c7f5c?text=Salon+3", alt: "サロンの雰囲気 3" },
+            ]}
+          />
           <div>
             <p className="text-[13px] sm:text-sm text-[var(--muted)] leading-[2]">
               当サロンは、お客様一人ひとりのライフスタイルに合わせたネイルデザインをご提案いたします。
