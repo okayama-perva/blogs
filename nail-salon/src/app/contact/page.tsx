@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { ContactForm } from "./contact-form";
 
 export const metadata: Metadata = {
-  title: "お問い合わせ | Nail Salon",
-  description: "ネイルサロンへのお問い合わせはこちらから",
+  title: "お問い合わせ | nabi nail",
+  description: "nabi nailへのお問い合わせはこちらから",
 };
 
 export default function ContactPage() {

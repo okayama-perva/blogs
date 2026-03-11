@@ -11,8 +11,8 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Nail Salon",
-  description: "ネイルサロンの公式サイト。メニュー・ご予約・ブログをご覧いただけます。",
+  title: "nabi nail",
+  description: "nabi nailの公式サイト。メニュー・ご予約・ブログをご覧いただけます。",
 };
 
 export default function RootLayout({

@@ -5,8 +5,8 @@ import { prisma } from "@/lib/prisma";
 import type { Menu } from "@/generated/prisma/client";
 
 export const metadata: Metadata = {
-  title: "メニュー | Nail Salon",
-  description: "ネイルサロンの施術メニュー・料金一覧",
+  title: "メニュー | nabi nail",
+  description: "nabi nailの施術メニュー・料金一覧",
 };
 
 async function fetchMenus(): Promise<Menu[]> {
