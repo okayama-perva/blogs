@@ -10,30 +10,39 @@ async function requireAuth() {
 }
 
 export async function GET() {
-  const err = await requireAuth();
-  if (err) return err;
+  try {
+    const err = await requireAuth();
+    if (err) return err;
 
-  const menus = await prisma.menu.findMany({ orderBy: { sortOrder: "asc" } });
-  return NextResponse.json(menus);
+    const menus = await prisma.menu.findMany({ orderBy: { sortOrder: "asc" } });
+    return NextResponse.json(menus);
+  } catch (e) {
+    console.error("GET /api/admin/menu error:", e);
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
-  const err = await requireAuth();
-  if (err) return err;
+  try {
+    const err = await requireAuth();
+    if (err) return err;
 
-  const body = await req.json();
-  const menu = await prisma.menu.create({
-    data: {
-      name: body.name,
-      description: body.description || null,
-      price: Number(body.price),
-      duration: Number(body.duration),
-      category: body.category || null,
-      imageUrl: body.imageUrl || null,
-      sortOrder: Number(body.sortOrder ?? 0),
-    },
-  });
-  return NextResponse.json(menu, { status: 201 });
+    const body = await req.json();
+    const menu = await prisma.menu.create({
+      data: {
+        name: body.name,
+        description: body.description || null,
+        price: Number(body.price),
+        duration: Number(body.duration),
+        category: body.category || null,
+        sortOrder: Number(body.sortOrder ?? 0),
+      },
+    });
+    return NextResponse.json(menu, { status: 201 });
+  } catch (e) {
+    console.error("POST /api/admin/menu error:", e);
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
 }
 
 export async function PATCH(req: NextRequest) {

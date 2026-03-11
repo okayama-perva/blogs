@@ -12,7 +12,6 @@ type Menu = {
   price: number;
   duration: number;
   category: string | null;
-  imageUrl: string | null;
   isActive: boolean;
   sortOrder: number;
 };
@@ -23,11 +22,10 @@ type FormData = {
   price: string;
   duration: string;
   category: string;
-  imageUrl: string;
   sortOrder: string;
 };
 
-const emptyForm: FormData = { name: "", description: "", price: "", duration: "60", category: "", imageUrl: "", sortOrder: "0" };
+const emptyForm: FormData = { name: "", description: "", price: "", duration: "60", category: "", sortOrder: "0" };
 
 const inputClass =
   "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-pink-400 focus:outline-none focus:ring-1 focus:ring-pink-400";
@@ -83,7 +81,6 @@ export default function AdminMenuPage() {
       price: String(menu.price),
       duration: String(menu.duration),
       category: menu.category || "",
-      imageUrl: menu.imageUrl || "",
       sortOrder: String(menu.sortOrder),
     });
   };
@@ -174,16 +171,6 @@ export default function AdminMenuPage() {
               className={inputClass}
               value={form.sortOrder}
               onChange={(e) => setForm({ ...form, sortOrder: e.target.value })}
-            />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-gray-600 mb-1">画像URL</label>
-            <input
-              type="url"
-              className={inputClass}
-              value={form.imageUrl}
-              onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-              placeholder="https://example.com/image.jpg"
             />
           </div>
         </div>

@@ -38,7 +38,6 @@ model Menu {
   price       Int
   duration    Int      // 施術時間（分）
   category    String?
-  imageUrl    String?  // メニュー画像URL
   isActive    Boolean  @default(true)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())

@@ -46,31 +46,22 @@ export default async function MenuPage() {
               <h2 className="text-sm tracking-[0.15em] text-[var(--accent)] mb-10 pb-3 border-b border-[var(--accent-light)]">
                 {cat}
               </h2>
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {grouped[cat].map((menu) => (
-                  <div key={menu.id} className="flex gap-5 sm:gap-8">
-                    {/* 画像 */}
-                    <div className="w-28 h-28 sm:w-36 sm:h-36 shrink-0 bg-[var(--gray-light)] overflow-hidden">
-                      {menu.imageUrl ? (
-                        <img src={menu.imageUrl} alt={menu.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[var(--muted)] text-[11px]">No Image</div>
-                      )}
-                    </div>
-                    {/* 情報 */}
-                    <div className="flex-1 py-1">
+                  <div key={menu.id} className="flex items-baseline justify-between gap-4 py-4 border-b border-[var(--gray-light)] last:border-b-0">
+                    <div className="flex-1">
                       <h3 className="text-[15px] text-[var(--foreground)]">{menu.name}</h3>
                       {menu.description && (
-                        <p className="text-[13px] text-[var(--muted)] mt-2 leading-relaxed">
+                        <p className="text-[13px] text-[var(--muted)] mt-1.5 leading-relaxed">
                           {menu.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-3 mt-3">
-                        <span className="text-[15px] text-[var(--accent)] font-medium">
-                          &yen;{menu.price.toLocaleString()}
-                        </span>
-                        <span className="text-[11px] text-[var(--muted)]">{menu.duration}min</span>
-                      </div>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <span className="text-[15px] text-[var(--accent)] font-medium">
+                        &yen;{menu.price.toLocaleString()}
+                      </span>
+                      <span className="text-[11px] text-[var(--muted)] ml-2">{menu.duration}min</span>
                     </div>
                   </div>
                 ))}
