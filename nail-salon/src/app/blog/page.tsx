@@ -3,8 +3,8 @@ import Link from "next/link";
 import { getBlogs, type Blog } from "@/lib/microcms";
 
 export const metadata: Metadata = {
-  title: "ブログ | Nail Salon",
-  description: "ネイルサロンのブログ記事一覧",
+  title: "ブログ | nabi nail",
+  description: "nabi nailのブログ記事一覧",
 };
 
 async function fetchBlogs(): Promise<Blog[]> {

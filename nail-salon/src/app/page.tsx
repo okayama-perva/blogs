@@ -26,7 +26,7 @@ export default async function Home() {
         <div className="absolute inset-0 bg-white/40" />
         <div className="relative text-center px-6">
           <p className="text-[11px] tracking-[0.4em] uppercase text-[var(--muted)] mb-6">
-            Nail Salon
+            nabi nail
           </p>
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extralight text-[var(--foreground)] leading-snug tracking-wider">
             あなたの指先に

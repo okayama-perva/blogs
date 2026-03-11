@@ -6,8 +6,8 @@ import type { Menu } from "@/generated/prisma/client";
 import { ReservationForm } from "./reservation-form";
 
 export const metadata: Metadata = {
-  title: "ご予約 | Nail Salon",
-  description: "ネイルサロンのご予約はこちらから",
+  title: "ご予約 | nabi nail",
+  description: "nabi nailのご予約はこちらから",
 };
 
 async function fetchMenus(): Promise<Menu[]> {

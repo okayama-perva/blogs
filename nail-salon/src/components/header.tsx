@@ -19,7 +19,7 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[var(--gray-light)]">
       <div className="mx-auto max-w-6xl flex items-center justify-between px-6 py-5 lg:px-10">
         <Link href="/" className="text-base font-light tracking-[0.2em] text-[var(--foreground)] uppercase">
-          Nail Salon
+          nabi nail
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
