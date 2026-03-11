@@ -2,21 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { getBlogs, type Blog } from "@/lib/microcms";
-import { prisma } from "@/lib/prisma";
-import type { Menu } from "@/generated/prisma/client";
 import ImageSlider from "@/components/image-slider";
-
-async function fetchMenus(): Promise<Menu[]> {
-  try {
-    return await prisma.menu.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-      take: 6,
-    });
-  } catch {
-    return [];
-  }
-}
 
 async function fetchBlogs(): Promise<Blog[]> {
   try {
@@ -28,7 +14,7 @@ async function fetchBlogs(): Promise<Blog[]> {
 }
 
 export default async function Home() {
-  const [menus, blogs] = await Promise.all([fetchMenus(), fetchBlogs()]);
+  const blogs = await fetchBlogs();
 
   return (
     <>
@@ -88,7 +74,7 @@ export default async function Home() {
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
           {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="aspect-square overflow-hidden group">
+            <div key={i} className={`aspect-square overflow-hidden group${i === 8 ? " hidden lg:block" : ""}`}>
               <img
                 src={`https://placehold.co/600x600/f5f0eb/b8967a?text=Nail+${i + 1}`}
                 alt=""
@@ -97,44 +83,12 @@ export default async function Home() {
             </div>
           ))}
         </div>
-      </section>
-
-      {/* Menu — 画像付き */}
-      <section className="py-28 lg:py-36">
-        <p className="text-[11px] tracking-[0.4em] uppercase text-[var(--muted)] text-center mb-4">Menu</p>
-        <h2 className="text-2xl sm:text-3xl font-extralight text-[var(--foreground)] text-center mb-16 lg:mb-20">
-          施術メニュー
-        </h2>
-        {menus.length > 0 ? (
-          <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {menus.map((menu) => (
-              <div key={menu.id} className="group">
-                <div className="aspect-[4/3] overflow-hidden bg-[var(--gray-light)]">
-                  {menu.imageUrl ? (
-                    <img src={menu.imageUrl} alt={menu.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[var(--muted)] text-xs">No Image</div>
-                  )}
-                </div>
-                <div className="mt-4">
-                  <p className="text-[15px] text-[var(--foreground)]">{menu.name}</p>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className="text-[13px] text-[var(--accent)]">&yen;{menu.price.toLocaleString()}</span>
-                    <span className="text-[11px] text-[var(--muted)]">{menu.duration}min</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-[var(--muted)] text-sm">メニューは準備中です</p>
-        )}
         <div className="text-center mt-14">
           <Link
-            href="/menu"
+            href="/gallery"
             className="text-sm tracking-[0.15em] text-[var(--foreground)] border-b border-[var(--foreground)] pb-1 hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors duration-300"
           >
-            View All Menu
+            View All Gallery
           </Link>
         </div>
       </section>

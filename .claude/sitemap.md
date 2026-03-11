@@ -5,6 +5,7 @@
 | トップ | `/` | Prisma (Menu) + microCMS (blogs) | 完了 |
 | メニュー表 | `/menu` | Prisma (Menu) | 完了 |
 | 予約 | `/reservation` | Prisma (Menu, Reservation) | 完了 |
+| ギャラリー | `/gallery` | microCMS (gallery) | 完了 |
 | ブログ一覧 | `/blog` | microCMS (blogs) | 完了 |
 | ブログ詳細 | `/blog/[id]` | microCMS (blogs) | 完了 |
 | コンタクト | `/contact` | - (Server Action) | 完了 |
