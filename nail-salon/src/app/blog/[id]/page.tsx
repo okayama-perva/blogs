@@ -11,9 +11,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { id } = await params;
     const blog = await getBlog(id);
-    return { title: `${blog.title} | Nail Salon` };
+    return { title: `${blog.title} | nabi nail` };
   } catch {
-    return { title: "記事が見つかりません | Nail Salon" };
+    return { title: "記事が見つかりません | nabi nail" };
   }
 }
 

@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <p className="text-[15px] font-light tracking-[0.2em] text-[var(--foreground)] mb-4 uppercase">
-              Nail Salon
+              nabi nail
             </p>
             <div className="text-[13px] text-[var(--muted)] leading-loose space-y-1">
               <p>〒000-0000 東京都○○区○○ 1-2-3</p>
@@ -43,7 +43,7 @@ export function Footer() {
         </div>
 
         <p className="mt-16 text-center text-[11px] tracking-[0.1em] text-[var(--muted)]/50">
-          &copy; {new Date().getFullYear()} Nail Salon
+          &copy; {new Date().getFullYear()} nabi nail
         </p>
       </div>
     </footer>
