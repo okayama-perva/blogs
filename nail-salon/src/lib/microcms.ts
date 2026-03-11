@@ -17,6 +17,7 @@ export type Blog = {
   category?: { id: string; name: string };
   publishedAt: string;
   revisedAt: string;
+  pickup?: boolean;
 };
 
 export type GalleryItem = {
