@@ -4,17 +4,17 @@ import Link from "next/link";
 import { getBlogs, type Blog } from "@/lib/microcms";
 import ImageSlider from "@/components/image-slider";
 
-async function fetchBlogs(): Promise<Blog[]> {
+async function fetchPickupBlog(): Promise<Blog | null> {
   try {
-    const res = await getBlogs({ limit: 3 });
-    return res.contents;
+    const res = await getBlogs({ filters: "pickup[equals]true", limit: 1 });
+    return res.contents[0] ?? null;
   } catch {
-    return [];
+    return null;
   }
 }
 
 export default async function Home() {
-  const blogs = await fetchBlogs();
+  const pickupBlog = await fetchPickupBlog();
 
   return (
     <>
@@ -93,32 +93,30 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Blog */}
+      {/* Blog — ピックアップ1記事 */}
       <section className="py-28 lg:py-36 -mx-4 lg:-mx-8 px-6 lg:px-10 bg-[var(--gray-light)]">
         <p className="text-[11px] tracking-[0.4em] uppercase text-[var(--muted)] text-center mb-4">Journal</p>
         <h2 className="text-2xl sm:text-3xl font-extralight text-[var(--foreground)] text-center mb-16 lg:mb-20">
           ブログ
         </h2>
-        {blogs.length > 0 ? (
-          <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-10">
-            {blogs.map((blog) => (
-              <Link key={blog.id} href={`/blog/${blog.id}`} className="group block">
-                <div className="aspect-[4/3] overflow-hidden bg-white">
-                  {blog.eyecatch && (
-                    <img src={blog.eyecatch.url} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  )}
-                </div>
-                <div className="mt-4">
-                  <p className="text-[11px] text-[var(--muted)]">
-                    {new Date(blog.publishedAt).toLocaleDateString("ja-JP")}
-                  </p>
-                  <h3 className="text-[15px] text-[var(--foreground)] mt-1 leading-relaxed group-hover:text-[var(--accent)] transition-colors duration-300">
-                    {blog.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
-          </div>
+        {pickupBlog ? (
+          <Link href={`/blog/${pickupBlog.id}`} className="group block max-w-3xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
+              <div className="aspect-[4/3] overflow-hidden bg-white">
+                {pickupBlog.eyecatch && (
+                  <img src={pickupBlog.eyecatch.url} alt={pickupBlog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                )}
+              </div>
+              <div>
+                <p className="text-[11px] text-[var(--muted)]">
+                  {new Date(pickupBlog.publishedAt).toLocaleDateString("ja-JP")}
+                </p>
+                <h3 className="text-[18px] sm:text-xl font-light text-[var(--foreground)] mt-2 leading-relaxed group-hover:text-[var(--accent)] transition-colors duration-300">
+                  {pickupBlog.title}
+                </h3>
+              </div>
+            </div>
+          </Link>
         ) : (
           <p className="text-center text-[var(--muted)] text-sm">記事は準備中です</p>
         )}
