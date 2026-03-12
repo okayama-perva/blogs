@@ -3,8 +3,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-
 type Menu = {
   id: number;
   name: string;
@@ -109,15 +107,7 @@ export default function AdminMenuPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">メニュー管理</h1>
-        <Link
-          href="/admin/dashboard"
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-        >
-          予約管理へ戻る
-        </Link>
-      </div>
+      <h1 className="text-xl font-bold text-gray-800">メニュー管理</h1>
 
       {/* 追加/編集フォーム */}
       <form onSubmit={handleSubmit} className="rounded-xl border border-pink-100 p-6 space-y-4">

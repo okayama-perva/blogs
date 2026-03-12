@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { getBlogs, type Blog } from "@/lib/microcms";
+import { prisma } from "@/lib/prisma";
 import ImageSlider from "@/components/image-slider";
 
 async function fetchPickupBlog(): Promise<Blog | null> {
@@ -13,8 +14,35 @@ async function fetchPickupBlog(): Promise<Blog | null> {
   }
 }
 
+async function fetchGalleryImages() {
+  try {
+    return await prisma.galleryImage.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 9,
+      select: { id: true, fileName: true, caption: true },
+    });
+  } catch {
+    return [];
+  }
+}
+
+async function fetchSliderImages() {
+  try {
+    return await prisma.sliderImage.findMany({
+      orderBy: { sortOrder: "asc" },
+      select: { id: true, fileName: true, alt: true },
+    });
+  } catch {
+    return [];
+  }
+}
+
 export default async function Home() {
-  const pickupBlog = await fetchPickupBlog();
+  const [pickupBlog, galleryImages, sliderImages] = await Promise.all([
+    fetchPickupBlog(),
+    fetchGalleryImages(),
+    fetchSliderImages(),
+  ]);
 
   return (
     <>
@@ -49,11 +77,10 @@ export default async function Home() {
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <ImageSlider
-            images={[
-              { src: "https://placehold.co/800x600/f5f0eb/b8967a?text=Salon+1", alt: "サロンの雰囲気 1" },
-              { src: "https://placehold.co/800x600/ebe5de/a68b6b?text=Salon+2", alt: "サロンの雰囲気 2" },
-              { src: "https://placehold.co/800x600/e0d8cf/9c7f5c?text=Salon+3", alt: "サロンの雰囲気 3" },
-            ]}
+            images={sliderImages.map((img) => ({
+              src: `/uploads/slider/${img.fileName}`,
+              alt: img.alt,
+            }))}
           />
           <div>
             <p className="text-[13px] sm:text-sm text-[var(--muted)] leading-[2]">
@@ -73,15 +100,21 @@ export default async function Home() {
           デザインギャラリー
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className={`aspect-square overflow-hidden group${i === 8 ? " hidden lg:block" : ""}`}>
-              <img
-                src={`https://placehold.co/600x600/f5f0eb/b8967a?text=Nail+${i + 1}`}
-                alt=""
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          ))}
+          {galleryImages.length > 0 ? (
+            galleryImages.map((img, i) => (
+              <div key={img.id} className={`aspect-square overflow-hidden group${i === 8 ? " hidden lg:block" : ""}`}>
+                <img
+                  src={`/uploads/gallery/${img.fileName}`}
+                  alt={img.caption || ""}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+            ))
+          ) : (
+            <p className="col-span-full text-center text-[var(--muted)] text-sm py-12">
+              ギャラリーは準備中です
+            </p>
+          )}
         </div>
         <div className="text-center mt-14">
           <Link

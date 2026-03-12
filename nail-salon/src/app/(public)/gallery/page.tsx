@@ -1,22 +1,23 @@
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
-import { getGallery, type GalleryItem } from "@/lib/microcms";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "ギャラリー | nabi nail",
   description: "nabi nailのネイルデザインギャラリー",
 };
 
-async function fetchGallery(): Promise<GalleryItem[]> {
-  try {
-    const res = await getGallery();
-    return res.contents;
-  } catch {
-    return [];
-  }
-}
-
 export default async function GalleryPage() {
-  const items = await fetchGallery();
+  let items: { id: number; fileName: string; caption: string | null }[] = [];
+  try {
+    items = await prisma.galleryImage.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { id: true, fileName: true, caption: true },
+    });
+  } catch {
+    items = [];
+  }
 
   return (
     <>
@@ -30,7 +31,7 @@ export default async function GalleryPage() {
           {items.map((item) => (
             <div key={item.id} className="aspect-square overflow-hidden group">
               <img
-                src={item.image.url}
+                src={`/uploads/gallery/${item.fileName}`}
                 alt={item.caption || ""}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />

@@ -44,6 +44,25 @@ model Menu {
   updatedAt   DateTime @updatedAt
 }
 
+// スライダー画像
+model SliderImage {
+  id        Int      @id @default(autoincrement())
+  fileName  String
+  alt       String   @default("")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// ギャラリー画像
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  fileName  String
+  caption   String?
+  width     Int
+  height    Int
+  createdAt DateTime @default(now())
+}
+
 // 管理者（NextAuth用）
 model Admin {
   id        Int      @id @default(autoincrement())
