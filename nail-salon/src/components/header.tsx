@@ -48,7 +48,7 @@ export function Header() {
       </div>
 
       {isOpen && (
-        <nav className="md:hidden bg-white border-t border-[var(--gray-light)]">
+        <nav className="md:hidden absolute left-0 right-0 top-full bg-white/95 backdrop-blur-md border-t border-[var(--gray-light)] shadow-sm">
           {navLinks.map((link) => (
             <Link
               key={link.href}
