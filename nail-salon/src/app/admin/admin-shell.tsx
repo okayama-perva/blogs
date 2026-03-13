@@ -7,6 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 const navItems = [
   { href: "/admin/dashboard", label: "予約管理" },
   { href: "/admin/menu", label: "メニュー管理" },
+  { href: "/admin/blocked", label: "予約ブロック" },
   { href: "/admin/gallery", label: "ギャラリー" },
   { href: "/admin/slider", label: "スライダー" },
 ];

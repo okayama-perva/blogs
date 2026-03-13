@@ -44,6 +44,16 @@ model Menu {
   updatedAt   DateTime @updatedAt
 }
 
+// ブロック枠（外部予約・休憩など）
+model BlockedSlot {
+  id      Int      @id @default(autoincrement())
+  date    DateTime @db.Date
+  startAt String   // "10:00"
+  endAt   String   // "11:30"
+  reason  String?
+  createdAt DateTime @default(now())
+}
+
 // スライダー画像
 model SliderImage {
   id        Int      @id @default(autoincrement())

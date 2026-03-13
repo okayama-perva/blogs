@@ -40,6 +40,17 @@ export async function submitReservation(
     return { success: false, message: "過去の日時は選択できません。" };
   }
 
+  // 19:00以降の予約不可 & 施術終了が20:00を超える場合は不可
+  const startHour = startAt.getHours();
+  const startMin = startAt.getMinutes();
+  if (startHour > 19 || (startHour === 19 && startMin > 0)) {
+    return { success: false, message: "19:00以降の予約はできません。" };
+  }
+  const endMinutes = endAt.getHours() * 60 + endAt.getMinutes();
+  if (endMinutes > 20 * 60) {
+    return { success: false, message: "施術終了が20:00を超えるため予約できません。" };
+  }
+
   try {
     // レート制限: 同一メールから5分以内の重複予約を拒否
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);

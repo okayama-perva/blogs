@@ -16,6 +16,7 @@ export default function AdminSliderPage() {
   const router = useRouter();
   const [images, setImages] = useState<SliderImage[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -31,11 +32,21 @@ export default function AdminSliderPage() {
 
   const uploadFile = async (file: File) => {
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    await fetch("/api/admin/slider", { method: "POST", body: formData });
+    setUploadError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/admin/slider", { method: "POST", body: formData });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setUploadError(data.error || `アップロード失敗 (${res.status})`);
+      } else {
+        fetchImages();
+      }
+    } catch (e) {
+      setUploadError(`ネットワークエラー: ${e instanceof Error ? e.message : String(e)}`);
+    }
     setUploading(false);
-    fetchImages();
     if (fileRef.current) fileRef.current.value = "";
   };
 

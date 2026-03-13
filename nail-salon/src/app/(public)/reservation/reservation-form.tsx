@@ -29,7 +29,7 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
     submitReservation,
     null
   );
-  const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null);
+  const [selectedMenus, setSelectedMenus] = useState<Menu[]>([]);
   const [calYear, setCalYear] = useState(() => new Date().getFullYear());
   const [calMonth, setCalMonth] = useState(() => new Date().getMonth());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -39,6 +39,17 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  const totalDuration = selectedMenus.reduce((sum, m) => sum + m.duration, 0);
+  const totalPrice = selectedMenus.reduce((sum, m) => sum + m.price, 0);
+
+  const toggleMenu = (menu: Menu) => {
+    setSelectedMenus((prev) =>
+      prev.some((m) => m.id === menu.id)
+        ? prev.filter((m) => m.id !== menu.id)
+        : [...prev, menu]
+    );
+  };
 
   const fetchSlots = useCallback(async (date: string) => {
     setLoadingSlots(true);
@@ -60,10 +71,17 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
   }, [selectedDate, fetchSlots]);
 
   const getAvailableSlots = useCallback(() => {
-    if (!selectedMenu || slots.length === 0) return slots;
-    const slotsNeeded = Math.ceil(selectedMenu.duration / 30);
+    if (selectedMenus.length === 0 || slots.length === 0) return slots;
+    const slotsNeeded = Math.ceil(totalDuration / 30);
     return slots.map((slot, i) => {
       if (!slot.available) return slot;
+      // 19:00以降は予約不可
+      if (slot.time > "19:00") return { ...slot, available: false };
+      // 施術終了が20:00を超える場合は不可
+      const [h, m] = slot.time.split(":").map(Number);
+      const endMinutes = h * 60 + m + totalDuration;
+      if (endMinutes > 20 * 60) return { ...slot, available: false };
+      // 連続スロットが空いているか
       for (let j = 0; j < slotsNeeded; j++) {
         if (i + j >= slots.length || !slots[i + j].available) {
           return { ...slot, available: false };
@@ -71,7 +89,7 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
       }
       return slot;
     });
-  }, [selectedMenu, slots]);
+  }, [selectedMenus, totalDuration, slots]);
 
   const displaySlots = getAvailableSlots();
 
@@ -94,6 +112,12 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
   };
 
   const isPrevDisabled = calYear === today.getFullYear() && calMonth === today.getMonth();
+
+  useEffect(() => {
+    if (state?.success) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [state?.success]);
 
   if (state?.success) {
     return (
@@ -120,39 +144,38 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
         <p className="text-[11px] tracking-[0.15em] uppercase text-[var(--muted)] mb-6">01 — メニューを選択</p>
         {menus.length > 0 ? (
           <div className="divide-y divide-[var(--accent-light)]">
-            {menus.map((menu) => (
-              <label
-                key={menu.id}
-                className={`flex items-center justify-between py-5 cursor-pointer transition-colors ${
-                  selectedMenu?.id === menu.id
-                    ? "text-[var(--accent)]"
-                    : "text-[var(--foreground)]"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className={`inline-block w-4 h-4 rounded-full border-2 transition-colors ${
-                    selectedMenu?.id === menu.id
-                      ? "border-[var(--accent)] bg-[var(--accent)]"
-                      : "border-[var(--muted)]/30"
-                  }`} />
-                  <input
-                    type="radio"
-                    name="menuSelect"
-                    value={menu.id}
-                    className="sr-only"
-                    onChange={() => setSelectedMenu(menu)}
-                    required
-                  />
-                  <div>
-                    <p className="text-[15px]">{menu.name}</p>
-                    <p className="text-[11px] text-[var(--muted)] mt-0.5">{menu.duration}min</p>
+            {menus.map((menu) => {
+              const checked = selectedMenus.some((m) => m.id === menu.id);
+              return (
+                <label
+                  key={menu.id}
+                  className={`flex items-center justify-between py-5 cursor-pointer transition-colors ${
+                    checked ? "text-[var(--accent)]" : "text-[var(--foreground)]"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className={`inline-block w-4 h-4 rounded border-2 transition-colors ${
+                      checked
+                        ? "border-[var(--accent)] bg-[var(--accent)]"
+                        : "border-[var(--muted)]/30"
+                    }`} />
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={checked}
+                      onChange={() => toggleMenu(menu)}
+                    />
+                    <div>
+                      <p className="text-[15px]">{menu.name}</p>
+                      <p className="text-[11px] text-[var(--muted)] mt-0.5">{menu.duration}min</p>
+                    </div>
                   </div>
-                </div>
-                <span className="text-[15px] font-medium text-[var(--accent)]">
-                  &yen;{menu.price.toLocaleString()}
-                </span>
-              </label>
-            ))}
+                  <span className="text-[15px] font-medium text-[var(--accent)]">
+                    &yen;{menu.price.toLocaleString()}
+                  </span>
+                </label>
+              );
+            })}
           </div>
         ) : (
           <div className="space-y-4">
@@ -162,11 +185,15 @@ export function ReservationForm({ menus }: { menus: Menu[] }) {
             <input name="duration" type="hidden" value="60" />
           </div>
         )}
-        {selectedMenu && (
+        {selectedMenus.length > 0 && (
           <>
-            <input type="hidden" name="menuName" value={selectedMenu.name} />
-            <input type="hidden" name="menuPrice" value={selectedMenu.price} />
-            <input type="hidden" name="duration" value={selectedMenu.duration} />
+            <div className="mt-4 p-4 bg-[var(--gray-light)] text-sm text-[var(--foreground)]">
+              <p>選択中: {selectedMenus.map((m) => m.name).join(" + ")}</p>
+              <p className="mt-1">合計時間: {totalDuration}分 / 合計料金: &yen;{totalPrice.toLocaleString()}</p>
+            </div>
+            <input type="hidden" name="menuName" value={selectedMenus.map((m) => m.name).join(" + ")} />
+            <input type="hidden" name="menuPrice" value={totalPrice} />
+            <input type="hidden" name="duration" value={totalDuration} />
           </>
         )}
       </div>
